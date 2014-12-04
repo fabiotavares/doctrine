@@ -9,8 +9,9 @@
 namespace FT\Sistema\Interfaces;
 
 use Silex\Application;
+use Doctrine\ORM\EntityManager;
 
 interface iProdutoController
 {
-    function rotas(Application $app);
+    function getController(Application $app, EntityManager $em);
 } 

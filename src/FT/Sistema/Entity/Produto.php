@@ -9,75 +9,75 @@
 namespace FT\Sistema\Entity;
 
 use FT\Sistema\Interfaces\iProduto;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity
+ * @ORM\Table(name="produtos")
+ */
 class Produto implements iProduto
 {
+    /**
+     * @ORM\Id
+     * @ORM\Column(type="integer")
+     * @ORM\GeneratedValue
+     */
     private $id;
-    private $nome;
-    private $valor;
-    private $descricao;
 
     /**
-     * @param mixed $descricao
+     * @ORM\Column(type="string", length=255)
      */
+    private $nome;
+
+    /**
+     * @ORM\Column(type="float", scale=2)
+     */
+    private $valor;
+
+    /**
+     * @ORM\Column(type="text")
+     */
+    private $descricao;
+
+
     public function setDescricao($descricao)
     {
         $this->descricao = $descricao;
     }
 
-    /**
-     * @return mixed
-     */
     public function getDescricao()
     {
         return $this->descricao;
     }
 
-    /**
-     * @param mixed $id
-     */
     public function setId($id)
     {
         $this->id = $id;
     }
 
-    /**
-     * @return mixed
-     */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * @param mixed $nome
-     */
     public function setNome($nome)
     {
         $this->nome = $nome;
     }
 
-    /**
-     * @return mixed
-     */
     public function getNome()
     {
         return $this->nome;
     }
 
-    /**
-     * @param mixed $valor
-     */
     public function setValor($valor)
     {
         $this->valor = $valor;
     }
 
-    /**
-     * @return mixed
-     */
     public function getValor()
     {
         return $this->valor;
     }
+
 } 

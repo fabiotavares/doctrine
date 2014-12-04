@@ -2,11 +2,14 @@
 
 require_once __DIR__.'/../bootstrap.php';
 
-$produtos = new \FT\Sistema\Controller\ProdutoController();
-$app->mount('/', $produtos->rotas($app));
+use FT\Sistema\Controller\ProdutoController;
+use FT\Sistema\Controller\ProdutoAPIController;
 
-$produtosApi = new \FT\Sistema\Controller\ProdutoAPIController();
-$app->mount('/', $produtosApi->rotas($app));
+$produtosApi = new ProdutoAPIController();
+$app->mount('/', $produtosApi->getController($app, $em));
+
+$produtos = new ProdutoController();
+$app->mount('/', $produtos->getController($app, $em));
 
 $app->run();
 

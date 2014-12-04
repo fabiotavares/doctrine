@@ -8,21 +8,25 @@
 
 namespace FT\Sistema\Mapper;
 
-use FT\Sistema\Entity\Produto;
+use Doctrine\ORM\EntityManager;
+use FT\Sistema\Interfaces\iProduto;
 use FT\Sistema\Interfaces\iProdutoMapper;
-use FT\Sistema\Database\Conexao;
+
 
 class ProdutoMapper implements iProdutoMapper
 {
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     public function fetchAll()
     {
         try{
-            $conn = Conexao::getDb();
-            $sql = "SELECT id, nome, descricao, Concat('R$ ', Replace(Replace(Replace(Format(valor, 2), '.', '|'), ',', '.'), '|', ',')) as valor FROM produtos;";
-            $stmt = $conn->prepare($sql);
-            $stmt->execute();
 
-            return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->findAll();
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to list the data in the database!";
@@ -33,13 +37,8 @@ class ProdutoMapper implements iProdutoMapper
     public function fetch($id)
     {
         try{
-            $conn = Conexao::getDb();
-            $sql = "SELECT * FROM produtos WHERE id = :id;";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue("id", $id, \PDO::PARAM_INT);
-            $stmt->execute();
 
-            return $stmt->fetch(\PDO::FETCH_ASSOC);
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->find($id);
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to list the data in the database!";
@@ -50,12 +49,13 @@ class ProdutoMapper implements iProdutoMapper
     public function delete($id)
     {
         try{
-            $conn = Conexao::getDb();
-            $sql = "DELETE FROM produtos WHERE id = :id;";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue("id", $id, \PDO::PARAM_INT);
-
-            return $stmt->execute();
+            $produto = $this->em->getRepository('FT\Sistema\Entity\Produto')->find($id);
+            if(isset($produto)) {
+                $this->em->remove($produto);
+                $this->em->flush();
+                return true;
+            }
+            return false; //não localizou o produto
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to delete the data in the database!";
@@ -63,18 +63,13 @@ class ProdutoMapper implements iProdutoMapper
         }
     }
 
-    public function update(Produto $produto)
+    public function update(iProduto $produto)
     {
         try{
-            $conn = Conexao::getDb();
-            $sql = "UPDATE produtos SET nome = :nome, valor = :valor, descricao = :descricao WHERE id = :id;";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue("nome", $produto->getNome(), \PDO::PARAM_STR);
-            $stmt->bindValue("valor", $produto->getValor(), \PDO::PARAM_STR);
-            $stmt->bindValue("descricao", $produto->getDescricao(), \PDO::PARAM_STR);
-            $stmt->bindValue("id", $produto->getId(), \PDO::PARAM_INT);
+            $this->em->merge($produto);
+            $this->em->flush();
 
-            return $stmt->execute();
+            return $produto;
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to update the data in the database!";
@@ -82,17 +77,13 @@ class ProdutoMapper implements iProdutoMapper
         }
     }
 
-    public function insert(Produto $produto)
+    public function insert(iProduto $produto)
     {
         try{
-            $conn = Conexao::getDb();
-            $sql = "INSERT INTO produtos (nome, valor, descricao) VALUES (:nome, :valor, :descricao);";
-            $stmt = $conn->prepare($sql);
-            $stmt->bindValue("nome", $produto->getNome(), \PDO::PARAM_STR);
-            $stmt->bindValue("valor", $produto->getValor(), \PDO::PARAM_STR);
-            $stmt->bindValue("descricao", $produto->getDescricao(), \PDO::PARAM_STR);
+            $this->em->persist($produto);
+            $this->em->flush();
 
-            return $stmt->execute();
+            return $produto;
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to insert the data in the database!";

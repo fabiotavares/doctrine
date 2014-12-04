@@ -14,16 +14,17 @@ use FT\Sistema\Mapper\ProdutoMapper;
 use FT\Sistema\Service\ProdutoService;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
+use Doctrine\ORM\EntityManager;
 
 class ProdutoController implements iProdutoController
 {
-    public function rotas(Application $app)
+    public function getController(Application $app, EntityManager $em)
     {
         $produtoController = $app['controllers_factory'];
 
-        $app['produtoService'] = function() {
+        $app['produtoService'] = function() use($em) {
             $produtoEntity = new Produto();
-            $produtoMapper = new ProdutoMapper();
+            $produtoMapper = new ProdutoMapper($em);
             $produtoService = new ProdutoService($produtoEntity, $produtoMapper);
 
             return $produtoService;
@@ -65,7 +66,8 @@ class ProdutoController implements iProdutoController
                 $dados['valor'] = $request->get('valor');
                 $dados['descricao'] = $request->get('descricao');
                 //insere novo produto no banco de dados
-                if(!$app['produtoService']->insert($dados)) {
+                $produto = $app['produtoService']->insert($dados);
+                if(!isset($produto)) {
                     $app->abort(500, "ERROR: Erro ao inserir o cadastro!");
                 }
 
@@ -126,6 +128,8 @@ class ProdutoController implements iProdutoController
             return $app->redirect($app['url_generator']->generate('produtos'));
 
         })->bind('produtoDelete');
+
+        //-----------------------------------------------------------------------------
 
         return $produtoController;
     }

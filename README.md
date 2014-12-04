@@ -1,34 +1,41 @@
-#Code Education
+###Code Education
 ----
-- Módulo: Silex
-- Projeto Fase 4: APIs Públicas
+- Projeto de curso
+- Módulo: DOCTRINE
+- Fase 1: Persistência com Doctrine
 - Autor: Fábio Tavares
-- Data: 17/11/2014
+- Data: 04/12/2014
 
-Observações
-----
-- Projeto de estudos no curso Code.education
-- Execute o arquivo fixtures.php na raiz para importar o banco de dados
-- Testes realizados com o servidor interno do PHP:
-- Na raiz do projeto, digite digite: php -S localhost:8888 -t public/ em um terminal
-- Para os testes no POSTMAN via Chrome utilize os exemplos abaixo
-- Para listar todos os produtos no formato json usando o método GET:
+###Instalação
+- É requirido PHP versão 5.5 ou superior
+- Utilizar o servidor interno do PHP
+- Importar o banco de dados produtos.sql
+- Em um terminal na raiz do projeto digite: php -S localhost:8888 -t public
+
+###Testes WEB
+- Em um navegador digite: localhost:8888
+- Opções disponíveis: Visualizar, Inserir, Alterar e Excluir
+
+###Testes REST
+Utilizando uma ferramento como Postman, faça:
+- Para listar os produtos (método GET):
 ```sh
-$ localhost:8888/api/produtos
+localhost:8888/api/produtos
 ```
-- Para listar o produto cujo id foi passado via GET:
+- Para exibir um produto (método GET):
 ```sh
-$ localhost:8888/api/produtos/{id}
+localhost:8888/api/produtos/1
 ```
-- Para inserir um produto cujos campos foram passados via POST:
+- Para inserir um produto (método POST):
 ```sh
-$ localhost:8888/api/produtos
+localhost:8888/api/produtos
 ```
-- Para editar o produto cujo id e valores foram passados via PUT:
+- Para alterar um produto (método PUT):
 ```sh
-$ localhost:8888/api/produtos/{id}
+localhost:8888/api/produtos/1
 ```
-- Para deletar o produto cujo id foi passado via DELETE:
+- Para alterar um excluir (método DELETE):
 ```sh
-$ localhost:8888/api/produtos/{id}
+localhost:8888/api/produtos/1
 ```
+Tabela produtos: id (1, 2, 3, 4), nome, valor, descricao

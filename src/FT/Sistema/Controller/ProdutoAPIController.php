@@ -8,6 +8,7 @@
 
 namespace FT\Sistema\Controller;
 
+use Doctrine\ORM\EntityManager;
 use FT\Sistema\Interfaces\iProdutoAPIController;
 use FT\Sistema\Entity\Produto;
 use FT\Sistema\Mapper\ProdutoMapper;
@@ -17,13 +18,13 @@ use Silex\Application;
 
 class ProdutoAPIController implements iProdutoAPIController
 {
-    public function rotas(Application $app)
+    public function getController(Application $app, EntityManager $em)
     {
         $produtoControllerApi = $app['controllers_factory'];
 
-        $app['produtoService'] = function() {
+        $app['produtoService'] = function() use($em) {
             $produtoEntity = new Produto();
-            $produtoMapper = new ProdutoMapper();
+            $produtoMapper = new ProdutoMapper($em);
             $produtoService = new ProdutoService($produtoEntity, $produtoMapper);
 
             return $produtoService;
@@ -43,14 +44,14 @@ class ProdutoAPIController implements iProdutoAPIController
         $produtoControllerApi->get('/api/produtos/{id}', function($id) use ($app) {
 
             if(!$this->valideId($id)) {
-                return $app->json(['ERRO' => 'Informe um id inteiro para o produto!'], 404);
+                return $app->json(['ERRO' => 'Informe um valor inteiro para o id'], 404);
             }
 
             $produto = $app['produtoService']->fetch($id);
-            if($produto) {
+            if($produto instanceof Produto) {
                 return $app->json($produto, 200);
             } else {
-                return $app->json(['ERRO' => 'Erro ao localizar produto!'], 404);
+                return $app->json(['ERRO' => 'Produto não localizado'], 404);
             }
 
         })->convert('id', function($id) { return (int) $id; });
@@ -64,20 +65,27 @@ class ProdutoAPIController implements iProdutoAPIController
             $dados['descricao'] = $request->get('descricao');
 
             if(!$this->validNome($dados['nome'])) {
-                return $app->json(['ERRO' => 'Informe um nome para o produto!'], 404);
+                return $app->json(['ERRO' => 'Informe um nome para o produto'], 404);
             }
             if(!$this->valideValor($dados['valor'])) {
-                return $app->json(['ERRO' => 'Informe um valor valido para o produto!'], 404);
+                return $app->json(['ERRO' => 'Informe um valor valido para o produto'], 404);
             }
             if(!$this->valideDescricao($dados['descricao'])) {
-                return $app->json(['ERRO' => 'Informe uma descricao para o produto!'], 404);
+                return $app->json(['ERRO' => 'Informe uma descricao para o produto'], 404);
             }
 
             //insere novo produto no banco de dados
-            if($app['produtoService']->insert($dados)) {
-                return $app->json(['SUCESSO' => 'Produto cadastrado com sucesso!'], 200);
+            $produto = $app['produtoService']->insert($dados);
+            if(isset($produto)) {
+                return $app->json([
+                    'SUCESSO' => 'Produto cadastrado com sucesso!',
+                    'Id' => $produto->getId(),
+                    'Nome' => $produto->getNome(),
+                    'Valor' => $produto->getValor(),
+                    'Descricao' => $produto->getDescricao()
+                ], 200);
             } else {
-                return $app->json(['ERRO' => 'Erro ao localizar produto!'], 404);
+                return $app->json(['ERRO' => 'Erro ao inserir produto!'], 404);
             }
 
         });
@@ -89,41 +97,41 @@ class ProdutoAPIController implements iProdutoAPIController
             //permite atualização parcial do produto
             $dados['id'] = $id;
             if(!$this->valideId($dados['id'])) {
-                return $app->json(['ERRO' => 'Informe um id inteiro para o produto!'], 404);
+                return $app->json(['ERRO' => 'Informe um valor inteiro para o id'], 404);
             }
 
             $produto = $app['produtoService']->fetch($id);
-            if($produto) {
+            if(isset($produto)) {
 
                 $dados['nome'] = $request->get('nome');
                 if( (isset($dados['nome'])) && !$this->validNome($dados['nome']) ) {
-                    return $app->json(['ERRO' => 'Informe um nome para o produto!'], 404);
+                    return $app->json(['ERRO' => 'Informe um nome para o produto'], 404);
                 } elseif(!isset($dados['nome'])) {
                     $dados['nome'] = $produto['nome'];
                 }
 
                 $dados['valor'] = $request->get('valor');
                 if( (isset($dados['valor'])) && !$this->valideValor($dados['valor']) ) {
-                    return $app->json(['ERRO' => 'Informe um valor valido para o produto!'], 404);
+                    return $app->json(['ERRO' => 'Informe um valor valido para o produto'], 404);
                 } elseif(!isset($dados['valor'])) {
                     $dados['valor'] = $produto['valor'];
                 }
 
                 $dados['descricao'] = $request->get('descricao');
                 if( (isset($dados['descricao'])) && !$this->valideDescricao($dados['descricao']) ) {
-                    return $app->json(['ERRO' => 'Informe uma descricao para o produto!'], 404);
+                    return $app->json(['ERRO' => 'Informe uma descricao para o produto'], 404);
                 } elseif(!isset($dados['descricao'])) {
                     $dados['descricao'] = $produto['descricao'];
                 }
 
                 if($app['produtoService']->update($dados)) {
-                    return $app->json(['SUCESSO' => 'Produto atualizado com sucesso!'], 200);
+                    return $app->json(['SUCESSO' => 'Produto atualizado com sucesso'], 200);
                 } else {
-                    return $app->json(['ERRO' => 'Erro ao atualizar produto!'], 404);
+                    return $app->json(['ERRO' => 'Houve um erro ao atualizar o produto'], 404);
                 }
 
             } else {
-                return $app->json(['ERRO' => 'Erro ao localizar produto!'], 404);
+                return $app->json(['ERRO' => 'Produto não localizado'], 404);
             }
 
         })->convert('id', function($id) { return (int) $id; });
@@ -133,21 +141,18 @@ class ProdutoAPIController implements iProdutoAPIController
         $produtoControllerApi->delete('/api/produtos/{id}', function($id) use ($app) {
 
             if(!$this->valideId($id)) {
-                return $app->json(['ERRO' => 'Informe um id inteiro para o produto!'], 404);
+                return $app->json(['ERRO' => 'Informe um valor inteiro par ao id'], 404);
             }
 
-            $produto = $app['produtoService']->fetch($id);
-            if($produto) {
-                if($app['produtoService']->delete($id)) {
-                    return $app->json(['SUCESSO' => 'Produto deletado com sucesso!'], 200);
-                } else {
-                    return $app->json(['ERRO' => 'Erro ao deletar produto!'], 404);
-                }
+            if($app['produtoService']->delete($id)) {
+                return $app->json(['SUCESSO' => 'Produto deletado com sucesso'], 200);
             } else {
-                return $app->json(['ERRO' => 'Erro ao localizar produto!'], 404);
+                return $app->json(['ERRO' => 'Houve um erro ao deletar o produto'], 404);
             }
 
         })->convert('id', function($id) { return (int) $id; });
+
+        //-----------------------------------------------------------------------------
 
         return $produtoControllerApi;
     }

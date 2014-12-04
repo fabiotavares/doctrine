@@ -8,13 +8,12 @@
 
 namespace FT\Sistema\Interfaces;
 
-use FT\Sistema\Entity\Produto;
 
 interface iProdutoMapper
 {
     function fetchAll();
     function fetch($id);
     function delete($id);
-    function update(Produto $produto);
-    function insert(Produto $produto);
+    function update(iProduto $produto);
+    function insert(iProduto $produto);
 } 
