@@ -1,6 +1,5 @@
-###Code Education
+###Projeto de curso Code Education
 ----
-- Projeto de curso
 - Módulo: DOCTRINE
 - Fase 1: Persistência com Doctrine
 - Autor: Fábio Tavares
@@ -17,7 +16,7 @@
 - Opções disponíveis: Visualizar, Inserir, Alterar e Excluir
 
 ###Testes REST
-Utilizando uma ferramento como Postman, faça:
+Utilizando uma ferramenta como Postman, faça:
 - Para listar os produtos (método GET):
 ```sh
 localhost:8888/api/produtos
