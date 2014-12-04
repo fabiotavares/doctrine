@@ -23,11 +23,7 @@ class ProdutoAPIController implements iProdutoAPIController
         $produtoControllerApi = $app['controllers_factory'];
 
         $app['produtoService'] = function() use($em) {
-            $produtoEntity = new Produto();
-            $produtoMapper = new ProdutoMapper($em);
-            $produtoService = new ProdutoService($produtoEntity, $produtoMapper);
-
-            return $produtoService;
+            return new ProdutoService($em);
         };
 
         //-----------------------------------------------------------------------------
@@ -51,7 +47,7 @@ class ProdutoAPIController implements iProdutoAPIController
             if($produto instanceof Produto) {
                 return $app->json($this->ProdutoToArray($produto), 200);
             } else {
-                return $app->json(['ERRO' => 'Produto não localizado'], 404);
+                return $app->json(['ERRO' => 'Produto nao localizado'], 404);
             }
 
         })->convert('id', function($id) { return (int) $id; });
@@ -125,7 +121,7 @@ class ProdutoAPIController implements iProdutoAPIController
                 }
 
             } else {
-                return $app->json(['ERRO' => 'Produto não localizado'], 404);
+                return $app->json(['ERRO' => 'Produto nao localizado'], 404);
             }
 
         })->convert('id', function($id) { return (int) $id; });

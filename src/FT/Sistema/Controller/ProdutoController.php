@@ -23,11 +23,7 @@ class ProdutoController implements iProdutoController
         $produtoController = $app['controllers_factory'];
 
         $app['produtoService'] = function() use($em) {
-            $produtoEntity = new Produto();
-            $produtoMapper = new ProdutoMapper($em);
-            $produtoService = new ProdutoService($produtoEntity, $produtoMapper);
-
-            return $produtoService;
+            return new ProdutoService($em);
         };
 
         //-----------------------------------------------------------------------------

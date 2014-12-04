@@ -8,56 +8,97 @@
 
 namespace FT\Sistema\Service;
 
-use FT\Sistema\Entity\Produto;
-use FT\Sistema\Mapper\ProdutoMapper;
+use Doctrine\ORM\EntityManager;
+use FT\Sistema\Entity\Produto as ProdutoEntity;
 use FT\Sistema\Interfaces\iProdutoService;
-use Symfony\Component\HttpFoundation\Request;
 
 class ProdutoService implements iProdutoService
 {
-    private $produto;
-    private $produtoMapper;
+    private $em;
 
-    public function __construct(Produto $produto, ProdutoMapper $produtoMapper)
+    public function __construct(EntityManager $em)
     {
-        $this->produto = $produto;
-        $this->produtoMapper = $produtoMapper;
+        $this->em = $em;
     }
 
     public function fetchAll()
     {
-        return $this->produtoMapper->fetchAll();
+        try{
+
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->findAll();
+
+        } catch (\PDOException $e) {
+            echo "ERROR: Unable to list the data in the database!";
+            die("Code: {$e->getCode()} <br> Message: {$e->getMessage()} <br>  File: {$e->getFile()} <br> Line: {$e->getLine()}");
+        }
     }
 
     public function fetch($id)
     {
-        return $this->produtoMapper->fetch($id);
+        try{
+
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->find($id);
+
+        } catch (\PDOException $e) {
+            echo "ERROR: Unable to list the data in the database!";
+            die("Code: {$e->getCode()} <br> Message: {$e->getMessage()} <br>  File: {$e->getFile()} <br> Line: {$e->getLine()}");
+        }
     }
 
     public function delete($id)
     {
-        return $this->produtoMapper->delete($id);
+        try{
+            $produtoEntity = $this->em->getReference('FT\Sistema\Entity\Produto', $id);
+            if(isset($produtoEntity)) {
+                $this->em->remove($produtoEntity);
+                $this->em->flush();
+                return true;
+            }
+            return false; //não localizou o produto
+
+        } catch (\PDOException $e) {
+            echo "ERROR: Unable to delete the data in the database!";
+            die("Code: {$e->getCode()} <br> Message: {$e->getMessage()} <br>  File: {$e->getFile()} <br> Line: {$e->getLine()}");
+        }
     }
 
     public function update(array $data)
     {
-        $this->produto->setId($data['id']);
-        $this->produto->setNome($data['nome']);
-        $this->produto->setDescricao($data['descricao']);
-        $this->produto->setValor($data['valor']);
+        try{
+            $produtoEntity = new ProdutoEntity();
+            $produtoEntity->setId($data['id']);
+            $produtoEntity->setNome($data['nome']);
+            $produtoEntity->setDescricao($data['descricao']);
+            $produtoEntity->setValor($data['valor']);
 
-        return $this->produtoMapper->update($this->produto);
+            $this->em->merge($produtoEntity);
+            $this->em->flush();
+
+            return $produtoEntity;
+
+        } catch (\PDOException $e) {
+            echo "ERROR: Unable to update the data in the database!";
+            die("Code: {$e->getCode()} <br> Message: {$e->getMessage()} <br>  File: {$e->getFile()} <br> Line: {$e->getLine()}");
+        }
     }
 
     public function insert(array $data)
     {
-        $this->produto->setNome($data['nome']);
-        $this->produto->setDescricao($data['descricao']);
-        $this->produto->setValor($data['valor']);
+        try{
+            $produtoEntity = new ProdutoEntity();
+            $produtoEntity->setNome($data['nome']);
+            $produtoEntity->setDescricao($data['descricao']);
+            $produtoEntity->setValor($data['valor']);
 
-        $result = $this->produtoMapper->insert($this->produto);
+            $this->em->persist($produtoEntity);
+            $this->em->flush();
 
-        return $result;
+            return $produtoEntity;
+
+        } catch (\PDOException $e) {
+            echo "ERROR: Unable to insert the data in the database!";
+            die("Code: {$e->getCode()} <br> Message: {$e->getMessage()} <br>  File: {$e->getFile()} <br> Line: {$e->getLine()}");
+        }
     }
 
 } 
