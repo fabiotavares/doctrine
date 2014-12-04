@@ -35,7 +35,7 @@ class ProdutoAPIController implements iProdutoAPIController
         $produtoControllerApi->get('/api/produtos', function() use ($app) {
 
             $produtos = $app['produtoService']->fetchAll();
-            return $app->json($produtos, 200);
+            return $app->json($this->ArrayOfProdutoToArray($produtos), 200);
 
         });
 
@@ -49,7 +49,7 @@ class ProdutoAPIController implements iProdutoAPIController
 
             $produto = $app['produtoService']->fetch($id);
             if($produto instanceof Produto) {
-                return $app->json($produto, 200);
+                return $app->json($this->ProdutoToArray($produto), 200);
             } else {
                 return $app->json(['ERRO' => 'Produto não localizado'], 404);
             }
@@ -77,13 +77,7 @@ class ProdutoAPIController implements iProdutoAPIController
             //insere novo produto no banco de dados
             $produto = $app['produtoService']->insert($dados);
             if(isset($produto)) {
-                return $app->json([
-                    'SUCESSO' => 'Produto cadastrado com sucesso!',
-                    'Id' => $produto->getId(),
-                    'Nome' => $produto->getNome(),
-                    'Valor' => $produto->getValor(),
-                    'Descricao' => $produto->getDescricao()
-                ], 200);
+                return $app->json(['SUCESSO' => 'Produto cadastrado com sucesso!'], 200);
             } else {
                 return $app->json(['ERRO' => 'Erro ao inserir produto!'], 404);
             }
@@ -182,4 +176,25 @@ class ProdutoAPIController implements iProdutoAPIController
         return true;
     }
 
+    public function ProdutoToArray(Produto $produto)
+    {
+        $result = [
+            "id" => $produto->getId(),
+            "nome" => $produto->getNome(),
+            "valor" => $produto->getValor(),
+            "descricao" => $produto->getDescricao()
+        ];
+
+        return $result;
+    }
+
+    public function ArrayOfProdutoToArray(array $array)
+    {
+        $result = [];
+        foreach($array as $produto) {
+            $result[] = $this->ProdutoToArray($produto);
+        }
+
+        return $result;
+    }
 } 
