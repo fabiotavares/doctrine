@@ -1,12 +1,70 @@
 {% extends 'layout.twig' %}
 
 {% block opcoes %}
-    <ul class="nav" xmlns="http://www.w3.org/1999/html">
-        <li><a href="{{ path('produtoNovo') }}" title="Cadastra um novo produto">Novo Produto</a></li>
-    </ul>
+        <a href="{{ path('produtoNovo') }}" title="Cadastra um novo produto" class="btn btn-success pull-right">Novo Produto</a>
 {% endblock %}
 
 {% block conteudo %}
+        <form action="/produtos" method="get" class="form-horizontal">
+
+            <div class="control-group">
+                <label class="control-label" for="iidbusca">Id:</label>
+                <div class="controls">
+                    <select name="tipoid" class="input-medium">
+                        <option value="qualquer" selected>Qualquer</option>
+                        <option value="iguala">Igual a</option>
+                        <option value="maiorque">Maior que</option>
+                        <option value="menorque">Menor que</option>
+                    </select>
+                    <input type="number" id="iidbusca" name="idbusca" min="0" step="1" autofocus="true" placeholder="Busca por id">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="inomebusca">Nome:</label>
+                <div class="controls">
+                    <select name="tiponome" class="input-medium">
+                        <option value="qualquer" selected>Qualquer</option>
+                        <option value="iguala">Igual a</option>
+                        <option value="contem">Contém</option>
+                        <option value="naocontem">Não contém</option>
+                    </select>
+                    <input type="text" id="inomebusca" name="nomebusca" placeholder="Busca por nome">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="ivalorbusca">Valor:</label>
+                <div class="controls">
+                    <select name="tiponome" class="input-medium">
+                        <option value="qualquer" selected>Qualquer</option>
+                        <option value="iguala">Igual a</option>
+                        <option value="maiorque">Maior que</option>
+                        <option value="menorque">Menor que</option>
+                    </select>
+                    <input type="number" id="ivalorbusca" name="valorbusca" min="0" step="0.01" placeholder="Busca por valor">
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="idescricaobusca">Descrição:</label>
+                <div class="controls">
+                    <select name="tiponome" class="input-medium">
+                        <option value="qualquer" selected>Qualquer</option>
+                        <option value="iguala">Igual a</option>
+                        <option value="contem">Contém</option>
+                        <option value="naocontem">Não contém</option>
+                    </select>
+                    <input type="text" id="idescricaobusca" name="descricaobusca" autofocus="true" placeholder="Busca por descricao">
+
+                    <input type="submit" name="submit" value="Buscar" title="Buscar produtos" class="btn btn-primary pull-right">
+                </div>
+            </div>
+
+        </form>
+
+        <hr>
+
         <table class="table table-bordered table-hover">
 
             <thead>

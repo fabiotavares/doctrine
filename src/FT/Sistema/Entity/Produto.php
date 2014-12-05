@@ -12,7 +12,7 @@ use FT\Sistema\Interfaces\iProduto;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="FT\Sistema\Entity\ProdutoRepository")
  * @ORM\Table(name="produtos")
  */
 class Produto implements iProduto
@@ -48,11 +48,6 @@ class Produto implements iProduto
     public function getDescricao()
     {
         return $this->descricao;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
     }
 
     public function getId()

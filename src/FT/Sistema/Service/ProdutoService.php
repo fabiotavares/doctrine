@@ -25,7 +25,7 @@ class ProdutoService implements iProdutoService
     {
         try{
 
-            return $this->em->getRepository('FT\Sistema\Entity\Produto')->findAll();
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->getProdutosDesc();
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to list the data in the database!";
@@ -37,7 +37,14 @@ class ProdutoService implements iProdutoService
     {
         try{
 
-            return $this->em->getRepository('FT\Sistema\Entity\Produto')->find($id);
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->find($id); //pesquisa pela chave
+            /*
+             * exemplos de findby:
+             * $repo = $this->em->getRepository('FT\Sistema\Entity\Produto');
+             * $repo->findBy(array("nome"=>"Fabio", "email"=>"fabreder@gmail.com"));
+             * $repo->findByNome("Fabio");
+             * $repo->findByEmail("fabreder@gmail.com");
+             */
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to list the data in the database!";
@@ -65,13 +72,12 @@ class ProdutoService implements iProdutoService
     public function update(array $data)
     {
         try{
-            $produtoEntity = new ProdutoEntity();
-            $produtoEntity->setId($data['id']);
+            $produtoEntity = $this->em->getReference('FT\Sistema\Entity\Produto', $data['id']);
             $produtoEntity->setNome($data['nome']);
             $produtoEntity->setDescricao($data['descricao']);
             $produtoEntity->setValor($data['valor']);
 
-            $this->em->merge($produtoEntity);
+            $this->em->persist($produtoEntity);
             $this->em->flush();
 
             return $produtoEntity;

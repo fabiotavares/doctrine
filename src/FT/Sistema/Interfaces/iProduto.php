@@ -11,7 +11,6 @@ namespace FT\Sistema\Interfaces;
 interface iProduto
 {
     function getId();
-    function setId($id);
     function getNome();
     function setNome($nome);
     function getValor();

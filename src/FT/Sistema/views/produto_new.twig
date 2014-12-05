@@ -1,9 +1,7 @@
 {% extends 'layout.twig' %}
 
 {% block opcoes %}
-    <ul class="nav" xmlns="http://www.w3.org/1999/html">
-        <li><a href="{{ path('produtos') }}" title="Exibe lista de produtos">Produtos</a></li>
-    </ul>
+    <a href="{{ path('produtos') }}" title="Retorna à lista de produtos" class="btn btn-success pull-right">Produtos</a>
 {% endblock %}
 
 {% block titulo %}<h4>Cadastrando Novo Produto</h4>{% endblock %}
