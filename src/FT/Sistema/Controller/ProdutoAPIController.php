@@ -11,7 +11,6 @@ namespace FT\Sistema\Controller;
 use Doctrine\ORM\EntityManager;
 use FT\Sistema\Interfaces\iProdutoAPIController;
 use FT\Sistema\Entity\Produto;
-use FT\Sistema\Mapper\ProdutoMapper;
 use FT\Sistema\Service\ProdutoService;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;

@@ -11,6 +11,7 @@ namespace FT\Sistema\Service;
 use Doctrine\ORM\EntityManager;
 use FT\Sistema\Entity\Produto as ProdutoEntity;
 use FT\Sistema\Interfaces\iProdutoService;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProdutoService implements iProdutoService
 {
@@ -21,11 +22,22 @@ class ProdutoService implements iProdutoService
         $this->em = $em;
     }
 
+    public function getFormConsulta(Request $criterios)
+    {
+        try{
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->getFormConsulta($criterios);
+
+        } catch (\PDOException $e) {
+            echo "ERROR: Unable to list the data in the database!";
+            die("Code: {$e->getCode()} <br> Message: {$e->getMessage()} <br>  File: {$e->getFile()} <br> Line: {$e->getLine()}");
+        }
+    }
+
     public function fetchAll()
     {
         try{
 
-            return $this->em->getRepository('FT\Sistema\Entity\Produto')->getProdutosDesc();
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->findAll();
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to list the data in the database!";

@@ -9,8 +9,6 @@
 namespace FT\Sistema\Controller;
 
 use FT\Sistema\Interfaces\iProdutoController;
-use FT\Sistema\Entity\Produto;
-use FT\Sistema\Mapper\ProdutoMapper;
 use FT\Sistema\Service\ProdutoService;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
@@ -36,12 +34,31 @@ class ProdutoController implements iProdutoController
 
         //-----------------------------------------------------------------------------
 
-        $produtoController->get('/produtos', function() use ($app) {
+        $produtoController->get('/produtos', function(Request $request) use ($app) {
 
             $produtos = $app['produtoService']->fetchAll();
-            return $app['twig']->render('produtos.twig', ['produtos'=>$produtos]);
+
+            return $app['twig']->render('produtos.twig',
+                ['produtos'=>$produtos, 'parametros'=>['id'=>'', 'nome'=>'', 'valor'=>'', 'desc'=>'',
+                 'tid'=>'', 'tnome'=>'', 'tvalor'=>'', 'tdesc'=>'', ]]);
 
         })->bind('produtos');
+
+        //-----------------------------------------------------------------------------
+
+        $produtoController->post('/produtos', function(Request $request) use ($app) {
+            $submit = $request->get('submit');
+            if(isset($submit)) {
+                $produtos = $app['produtoService']->getFormConsulta($request);
+                return $app['twig']->render('produtos.twig',
+                    ['produtos'=>$produtos, 'parametros'=>$request->request->all()]);
+            } else {
+                $produtos = $app['produtoService']->fetchAll();
+                return $app['twig']->render('produtos.twig',
+                    ['produtos'=>$produtos, 'parametros'=>['id'=>'', 'nome'=>'', 'valor'=>'', 'desc'=>'',
+                     'tid'=>'', 'tnome'=>'', 'tvalor'=>'', 'tdesc'=>'', ]]);
+            }
+        })->bind('consulta');
 
         //-----------------------------------------------------------------------------
 

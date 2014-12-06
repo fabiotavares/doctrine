@@ -5,59 +5,61 @@
 {% endblock %}
 
 {% block conteudo %}
-        <form action="/produtos" method="get" class="form-horizontal">
+        <form action="/produtos" method="post" class="form-horizontal">
 
             <div class="control-group">
-                <label class="control-label" for="iidbusca">Id:</label>
+                <label class="control-label" for="iid">Id:</label>
                 <div class="controls">
-                    <select name="tipoid" class="input-medium">
-                        <option value="qualquer" selected>Qualquer</option>
-                        <option value="iguala">Igual a</option>
-                        <option value="maiorque">Maior que</option>
-                        <option value="menorque">Menor que</option>
+                    <select name="tid" class="span2">
+                        <option value="qualquer" {% if parametros.tid == 'qualquer' %}selected{% endif %}>Qualquer</option>
+                        <option value="iguala" {% if parametros.tid == 'iguala' %}selected{% endif %}>Igual a</option>
+                        <option value="maiorque" {% if parametros.tid == 'maiorque' %}selected{% endif %}>Maior que</option>
+                        <option value="menorque" {% if parametros.tid == 'menorque' %}selected{% endif %}>Menor que</option>
                     </select>
-                    <input type="number" id="iidbusca" name="idbusca" min="0" step="1" autofocus="true" placeholder="Busca por id">
+                    <input type="number" class="span2" id="iid" name="id" min="0" step="1" placeholder="Id" value="{{ parametros.id }}">
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="inomebusca">Nome:</label>
+                <label class="control-label" for="ivalor">Valor:</label>
                 <div class="controls">
-                    <select name="tiponome" class="input-medium">
-                        <option value="qualquer" selected>Qualquer</option>
-                        <option value="iguala">Igual a</option>
-                        <option value="contem">Contém</option>
-                        <option value="naocontem">Não contém</option>
+                    <select name="tvalor" class="span2">
+                        <option value="qualquer" {% if parametros.tvalor == 'qualquer' %}selected{% endif %}>Qualquer</option>
+                        <option value="iguala" {% if parametros.tvalor == 'iguala' %}selected{% endif %}>Igual a</option>
+                        <option value="maiorque" {% if parametros.tvalor == 'maiorque' %}selected{% endif %}>Maior que</option>
+                        <option value="menorque" {% if parametros.tvalor == 'menorque' %}selected{% endif %}>Menor que</option>
                     </select>
-                    <input type="text" id="inomebusca" name="nomebusca" placeholder="Busca por nome">
+                    <input type="number" class="span2" id="ivalor" name="valor" min="0" step="0.01" placeholder="Valor" value="{{ parametros.valor }}">
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="ivalorbusca">Valor:</label>
+                <label class="control-label" for="inome">Nome:</label>
                 <div class="controls">
-                    <select name="tiponome" class="input-medium">
-                        <option value="qualquer" selected>Qualquer</option>
-                        <option value="iguala">Igual a</option>
-                        <option value="maiorque">Maior que</option>
-                        <option value="menorque">Menor que</option>
+                    <select name="tnome" class="span2">
+                        <option value="qualquer" {% if parametros.tnome == 'qualquer' %}selected{% endif %}>Qualquer</option>
+                        <option value="iguala" {% if parametros.tnome == 'iguala' %}selected{% endif %}>Igual a</option>
+                        <option value="contem" {% if parametros.tnome == 'contem' %}selected{% endif %}>Contém</option>
+                        <option value="naocontem" {% if parametros.tnome == 'naocontem' %}selected{% endif %}>Não contém</option>
                     </select>
-                    <input type="number" id="ivalorbusca" name="valorbusca" min="0" step="0.01" placeholder="Busca por valor">
+                    <input type="text" class="span6" id="inome" name="nome" placeholder="Nome" value="{{ parametros.nome }}">
                 </div>
             </div>
 
             <div class="control-group">
-                <label class="control-label" for="idescricaobusca">Descrição:</label>
+                <label class="control-label" for="idesc">Descrição:</label>
                 <div class="controls">
-                    <select name="tiponome" class="input-medium">
-                        <option value="qualquer" selected>Qualquer</option>
-                        <option value="iguala">Igual a</option>
-                        <option value="contem">Contém</option>
-                        <option value="naocontem">Não contém</option>
+                    <select name="tdesc" class="span2">
+                        <option value="qualquer" {% if parametros.tdesc == 'qualquer' %}selected{% endif %}>Qualquer</option>
+                        <option value="iguala" {% if parametros.tdesc == 'iguala' %}selected{% endif %}>Igual a</option>
+                        <option value="contem" {% if parametros.tdesc == 'contem' %}selected{% endif %}>Contém</option>
+                        <option value="naocontem" {% if parametros.tdesc == 'naocontem' %}selected{% endif %}>Não contém</option>
                     </select>
-                    <input type="text" id="idescricaobusca" name="descricaobusca" autofocus="true" placeholder="Busca por descricao">
-
-                    <input type="submit" name="submit" value="Buscar" title="Buscar produtos" class="btn btn-primary pull-right">
+                    <input type="text" class="span6" id="idesc" name="desc" placeholder="Descrição" value="{{ parametros.desc }}">
+                    <div class="pull-right">
+                        <button type="submit" name="submit" value="1" title="Buscar produtos com os critérios selecionados" class="btn btn-info">Buscar</button>
+                        <a href="{{ path('produtos') }}" title="Limpa consulta" class="btn btn-primary">Limpar</a>
+                    </div>
                 </div>
             </div>
 
