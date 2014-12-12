@@ -1,0 +1,36 @@
+/* tables */
+
+table.tablesorter #hcabecalho {
+    background-color: #F5F5F5;
+}
+
+table.tablesorter #hid {
+    min-width: 25px;
+}
+
+table.tablesorter #hnome {
+    min-width: 150px;
+}
+
+table.tablesorter #hvalor {
+    min-width: 50px;
+}
+
+table.tablesorter thead tr .header {
+	background-image: url(../img/bg.gif);
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+
+table.tablesorter thead tr .headerSortUp {
+	background-image: url(../img/asc.gif);
+}
+
+table.tablesorter thead tr .headerSortDown {
+	background-image: url(../img/desc.gif);
+}
+
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #dcdcdc;
+}

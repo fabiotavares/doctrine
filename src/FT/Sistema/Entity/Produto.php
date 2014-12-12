@@ -72,7 +72,7 @@ class Produto implements iProduto
 
     public function getValor()
     {
-        return $this->valor;
+        return number_format($this->valor, 2, ',', '.');
     }
 
 } 

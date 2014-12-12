@@ -11,6 +11,7 @@ namespace FT\Sistema\Service;
 use Doctrine\ORM\EntityManager;
 use FT\Sistema\Entity\Produto as ProdutoEntity;
 use FT\Sistema\Interfaces\iProdutoService;
+use FT\Sistema\Uteis\Consts;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProdutoService implements iProdutoService
@@ -22,10 +23,11 @@ class ProdutoService implements iProdutoService
         $this->em = $em;
     }
 
-    public function getFormConsulta(Request $criterios)
+    public function getProdutos(Request $request)
     {
         try{
-            return $this->em->getRepository('FT\Sistema\Entity\Produto')->getFormConsulta($criterios);
+
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->getProdutos($request);
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to list the data in the database!";
@@ -33,11 +35,23 @@ class ProdutoService implements iProdutoService
         }
     }
 
-    public function fetchAll()
+    public function getCountAll()
     {
         try{
 
-            return $this->em->getRepository('FT\Sistema\Entity\Produto')->findAll();
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->getCountAll();
+
+        } catch (\PDOException $e) {
+            echo "ERROR: Unable to list the data in the database!";
+            die("Code: {$e->getCode()} <br> Message: {$e->getMessage()} <br>  File: {$e->getFile()} <br> Line: {$e->getLine()}");
+        }
+    }
+
+    public function getAll(Request $request)
+    {
+        try{
+
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->getAll($request);
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to list the data in the database!";
@@ -50,13 +64,6 @@ class ProdutoService implements iProdutoService
         try{
 
             return $this->em->getRepository('FT\Sistema\Entity\Produto')->find($id); //pesquisa pela chave
-            /*
-             * exemplos de findby:
-             * $repo = $this->em->getRepository('FT\Sistema\Entity\Produto');
-             * $repo->findBy(array("nome"=>"Fabio", "email"=>"fabreder@gmail.com"));
-             * $repo->findByNome("Fabio");
-             * $repo->findByEmail("fabreder@gmail.com");
-             */
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to list the data in the database!";

@@ -13,6 +13,7 @@ use FT\Sistema\Service\ProdutoService;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 class ProdutoController implements iProdutoController
 {
@@ -36,29 +37,17 @@ class ProdutoController implements iProdutoController
 
         $produtoController->get('/produtos', function(Request $request) use ($app) {
 
-            $produtos = $app['produtoService']->fetchAll();
+            $parametros = $request->query->all();
+            $produtos = $app['produtoService']->getProdutos($request);
 
-            return $app['twig']->render('produtos.twig',
-                ['produtos'=>$produtos, 'parametros'=>['id'=>'', 'nome'=>'', 'valor'=>'', 'desc'=>'',
-                 'tid'=>'', 'tnome'=>'', 'tvalor'=>'', 'tdesc'=>'', ]]);
+            return $app['twig']->render('produtos.twig', [
+                'parametros'=>$parametros,
+                'produtos'=>$produtos['arrayProdutos'],
+                'paginador'=>$produtos['htmlPaginador']
+                ]
+            );
 
         })->bind('produtos');
-
-        //-----------------------------------------------------------------------------
-
-        $produtoController->post('/produtos', function(Request $request) use ($app) {
-            $submit = $request->get('submit');
-            if(isset($submit)) {
-                $produtos = $app['produtoService']->getFormConsulta($request);
-                return $app['twig']->render('produtos.twig',
-                    ['produtos'=>$produtos, 'parametros'=>$request->request->all()]);
-            } else {
-                $produtos = $app['produtoService']->fetchAll();
-                return $app['twig']->render('produtos.twig',
-                    ['produtos'=>$produtos, 'parametros'=>['id'=>'', 'nome'=>'', 'valor'=>'', 'desc'=>'',
-                     'tid'=>'', 'tnome'=>'', 'tvalor'=>'', 'tdesc'=>'', ]]);
-            }
-        })->bind('consulta');
 
         //-----------------------------------------------------------------------------
 
@@ -81,9 +70,8 @@ class ProdutoController implements iProdutoController
                 //insere novo produto no banco de dados
                 $produto = $app['produtoService']->insert($dados);
                 if(!isset($produto)) {
-                    $app->abort(500, "ERROR: Erro ao inserir o cadastro!");
+                    $app->abort(500, "ERROR: Erro ao inserir produto!");
                 }
-
             }
 
             return $app->redirect($app['url_generator']->generate('produtos'));

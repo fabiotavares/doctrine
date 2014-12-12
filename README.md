@@ -1,9 +1,9 @@
 ###Projeto de curso Code Education
 ----
 - Módulo: DOCTRINE
-- Fase 1: Persistência com Doctrine
+- Fase 2: Sistema de Busca com DQL
 - Autor: Fábio Tavares
-- Data: 04/12/2014
+- Data: 11/12/2014
 
 ###Instalação
 - É requirido PHP versão 5.5 ou superior
@@ -13,7 +13,7 @@
 
 ###Testes WEB
 - Em um navegador digite: localhost:8888
-- Opções disponíveis: Visualizar, Inserir, Alterar e Excluir
+- Opções disponíveis: Busca, Visualizar, Inserir, Alterar e Excluir
 
 ###Testes REST
 Utilizando uma ferramenta como Postman, faça:
@@ -37,4 +37,4 @@ localhost:8888/api/produtos/1
 ```sh
 localhost:8888/api/produtos/1
 ```
-Tabela produtos: id (1, 2, 3, 4), nome, valor, descricao
+Tabela produtos: id (1 .. 20), nome, valor, descricao
