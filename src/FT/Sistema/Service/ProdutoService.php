@@ -35,23 +35,11 @@ class ProdutoService implements iProdutoService
         }
     }
 
-    public function getCountAll()
+    public function findAll()
     {
         try{
 
-            return $this->em->getRepository('FT\Sistema\Entity\Produto')->getCountAll();
-
-        } catch (\PDOException $e) {
-            echo "ERROR: Unable to list the data in the database!";
-            die("Code: {$e->getCode()} <br> Message: {$e->getMessage()} <br>  File: {$e->getFile()} <br> Line: {$e->getLine()}");
-        }
-    }
-
-    public function getAll(Request $request)
-    {
-        try{
-
-            return $this->em->getRepository('FT\Sistema\Entity\Produto')->getAll($request);
+            return $this->em->getRepository('FT\Sistema\Entity\Produto')->findAll();
 
         } catch (\PDOException $e) {
             echo "ERROR: Unable to list the data in the database!";

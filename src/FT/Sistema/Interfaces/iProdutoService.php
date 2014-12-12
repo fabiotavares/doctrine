@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 interface iProdutoService
 {
-    function getAll(Request $request);
+    function findAll();
     function getProdutos(Request $request);
     function fetch($id);
     function delete($id);
