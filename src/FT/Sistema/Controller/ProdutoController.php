@@ -13,7 +13,8 @@ use FT\Sistema\Service\ProdutoService;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Pagination\Paginator;
+use FT\Sistema\Serialize\ProdutoSerialize;
+use FT\Sistema\Validador\ProdutoValidador;
 
 class ProdutoController implements iProdutoController
 {
@@ -22,7 +23,9 @@ class ProdutoController implements iProdutoController
         $produtoController = $app['controllers_factory'];
 
         $app['produtoService'] = function() use($em) {
-            return new ProdutoService($em);
+            $validador = new ProdutoValidador();
+            $serialize = new ProdutoSerialize();
+            return new ProdutoService($em, $validador, $serialize);
         };
 
         //-----------------------------------------------------------------------------

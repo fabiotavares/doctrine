@@ -24,7 +24,9 @@ class ProdutoAPIController implements iProdutoAPIController
         $produtoControllerApi = $app['controllers_factory'];
 
         $app['produtoService'] = function() use($em) {
-            return new ProdutoService($em);
+            $validador = new ProdutoValidador();
+            $serialize = new ProdutoSerialize();
+            return new ProdutoService($em, $validador, $serialize);
         };
 
         //-----------------------------------------------------------------------------
@@ -32,10 +34,10 @@ class ProdutoAPIController implements iProdutoAPIController
         $produtoControllerApi->get('/api/produtos', function() use ($app) {
             try{
                 $produtos = $app['produtoService']->findAll();
-                $produtoSerialize = new ProdutoSerialize();
-                return $app->json(['Produtos:'=>$produtoSerialize->ArrayOfProdutoToArray($produtos)], 200);
+                $produtoSerialize = $app['produtoService']->getSerialize();
+                return $app->json(['Produtos:'=>$produtoSerialize->ArrayOfProdutoToArray($produtos)]);
             } catch (\Exception $e) {
-                return $app->json(['ERRO:' => $e->getMessage()], 404);
+                return $app->json(['ERRO:' => $e->getMessage()]);
             }
         });
 
@@ -46,13 +48,13 @@ class ProdutoAPIController implements iProdutoAPIController
                 $produto = $app['produtoService']->fetch($id);
 
                 if($produto instanceof Produto) {
-                    $produtoSerialize = new ProdutoSerialize();
-                    return $app->json(['Produto:'=>$produtoSerialize->ProdutoToArray($produto)], 200);
+                    $produtoSerialize = $app['produtoService']->getSerialize();
+                    return $app->json(['Produto:'=>$produtoSerialize->ProdutoToArray($produto)]);
                 } else {
                     return $app->json(['ERRO:' => 'Produto nao localizado'], 404);
                 }
             } catch (\Exception $e) {
-                return $app->json(['ERRO:' => $e->getMessage()], 404);
+                return $app->json(['ERRO:' => $e->getMessage()]);
             }
         })->convert('id', function($id) { return (int) $id; });
 
@@ -60,19 +62,19 @@ class ProdutoAPIController implements iProdutoAPIController
         //valida e insere o registro de produto solicitado
         $produtoControllerApi->post('/api/produtos', function(Request $request) use ($app) {
             try{
-                $validador = new ProdutoValidador();
+                $validador = $app['produtoService']->getValidador();
                 $dados = $validador->valide($request->request->all());
                 $produto = $app['produtoService']->insert($dados);
 
                 if($produto instanceof Produto) {
-                    $produtoSerialize = new ProdutoSerialize();
+                    $produtoSerialize = $app['produtoService']->getSerialize();
                     return $app->json(['SUCESSO:' => 'Produto cadastrado com sucesso',
-                    'Produto'=>$produtoSerialize->ProdutoToArray($produto)], 200);
+                    'Produto'=>$produtoSerialize->ProdutoToArray($produto)]);
                 } else {
-                    return $app->json(['ERRO:' => 'Erro ao inserir produto'], 404);
+                    return $app->json(['ERRO:' => 'Erro ao inserir produto']);
                 }
             } catch (\Exception $e) {
-                return $app->json(['ERRO:' => $e->getMessage()], 404);
+                return $app->json(['ERRO:' => $e->getMessage()]);
             }
         });
 
@@ -82,20 +84,20 @@ class ProdutoAPIController implements iProdutoAPIController
             try{
                 $produto = $app['produtoService']->fetch($id);
                 if($produto instanceof Produto) {
-                    $validador = new ProdutoValidador();
+                    $validador = $app['produtoService']->getValidador();
                     $dados = $validador->valideParcial($request->request->all(), $produto);
                     if($app['produtoService']->update($dados)) {
-                        $produtoSerialize = new ProdutoSerialize();
+                        $produtoSerialize = $app['produtoService']->getSerialize();
                         return $app->json(['SUCESSO:' => 'Produto atualizado com sucesso',
-                            'Produto:'=>$produtoSerialize->ProdutoToArray($produto)], 200);
+                            'Produto:'=>$produtoSerialize->ProdutoToArray($produto)]);
                     } else {
-                        return $app->json(['ERRO:' => 'Houve um erro ao atualizar o produto'], 404);
+                        return $app->json(['ERRO:' => 'Houve um erro ao atualizar o produto']);
                     }
                 } else {
                     return $app->json(['ERRO:' => 'Produto não localizado'], 404);
                 }
             } catch (\Exception $e) {
-                return $app->json(['ERRO:' => $e->getMessage()], 404);
+                return $app->json(['ERRO:' => $e->getMessage()]);
             }
         })->convert('id', function($id) { return (int) $id; });
 
@@ -104,12 +106,12 @@ class ProdutoAPIController implements iProdutoAPIController
         $produtoControllerApi->delete('/api/produtos/{id}', function($id) use ($app) {
             try{
                 if($app['produtoService']->delete($id)) {
-                    return $app->json(['SUCESSO:' => 'Produto deletado com sucesso'], 200);
+                    return $app->json(['SUCESSO:' => 'Produto deletado com sucesso']);
                 } else {
-                    return $app->json(['ERRO:' => 'Houve um erro ao deletar o produto'], 404);
+                    return $app->json(['ERRO:' => 'Houve um erro ao deletar o produto']);
                 }
             } catch (\Exception $e) {
-                return $app->json(['ERRO:' => $e->getMessage()], 404);
+                return $app->json(['ERRO:' => $e->getMessage()]);
             }
         })->convert('id', function($id) { return (int) $id; });
 
