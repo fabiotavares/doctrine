@@ -6,7 +6,7 @@
  * Time: 18:59
  */
 
-namespace FT\Sistema\Entity;
+namespace FT\Sistema\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;

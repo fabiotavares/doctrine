@@ -6,11 +6,11 @@
  * Time: 15:45
  */
 
-namespace FT\Sistema\Serialize;
+namespace FT\Sistema\Service;
 
 use FT\Sistema\Entity\Produto;
 
-class ProdutoSerialize
+class ProdutoSerializeService
 {
     public function ProdutoToArray(Produto $produto)
     {

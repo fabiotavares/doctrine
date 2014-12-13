@@ -12,7 +12,7 @@ use FT\Sistema\Interfaces\iProduto;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="FT\Sistema\Entity\ProdutoRepository")
+ * @ORM\Entity(repositoryClass="FT\Sistema\Repository\ProdutoRepository")
  * @ORM\Table(name="produtos")
  */
 class Produto implements iProduto

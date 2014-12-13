@@ -10,11 +10,11 @@ namespace FT\Sistema\Controller;
 
 use FT\Sistema\Interfaces\iProdutoController;
 use FT\Sistema\Service\ProdutoService;
+use FT\Sistema\Service\ProdutoValidatorService;
+use FT\Sistema\Service\ProdutoSerializeService;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 use Doctrine\ORM\EntityManager;
-use FT\Sistema\Serialize\ProdutoSerialize;
-use FT\Sistema\Validador\ProdutoValidador;
 
 class ProdutoController implements iProdutoController
 {
@@ -22,10 +22,10 @@ class ProdutoController implements iProdutoController
     {
         $produtoController = $app['controllers_factory'];
 
+        //definição dos serviços disponíveis
+
         $app['produtoService'] = function() use($em) {
-            $validador = new ProdutoValidador();
-            $serialize = new ProdutoSerialize();
-            return new ProdutoService($em, $validador, $serialize);
+            return new ProdutoService($em);
         };
 
         //-----------------------------------------------------------------------------

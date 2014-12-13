@@ -11,8 +11,8 @@ namespace FT\Sistema\Controller;
 use Doctrine\ORM\EntityManager;
 use FT\Sistema\Interfaces\iProdutoAPIController;
 use FT\Sistema\Entity\Produto;
-use FT\Sistema\Validador\ProdutoValidador;
-use FT\Sistema\Serialize\ProdutoSerialize;
+use FT\Sistema\Service\ProdutoValidatorService;
+use FT\Sistema\Service\ProdutoSerializeService;
 use FT\Sistema\Service\ProdutoService;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
@@ -23,10 +23,18 @@ class ProdutoAPIController implements iProdutoAPIController
     {
         $produtoControllerApi = $app['controllers_factory'];
 
+        //definição dos serviços disponíveis
+
         $app['produtoService'] = function() use($em) {
-            $validador = new ProdutoValidador();
-            $serialize = new ProdutoSerialize();
-            return new ProdutoService($em, $validador, $serialize);
+            return new ProdutoService($em);
+        };
+
+        $app['produtoValidatorService'] = function() use($em) {
+            return new ProdutoValidatorService();
+        };
+
+        $app['produtoSerializeService'] = function() use($em) {
+            return new ProdutoSerializeService();
         };
 
         //-----------------------------------------------------------------------------
@@ -34,8 +42,8 @@ class ProdutoAPIController implements iProdutoAPIController
         $produtoControllerApi->get('/api/produtos', function() use ($app) {
             try{
                 $produtos = $app['produtoService']->findAll();
-                $produtoSerialize = $app['produtoService']->getSerialize();
-                return $app->json(['Produtos:'=>$produtoSerialize->ArrayOfProdutoToArray($produtos)]);
+                $produtosArray = $app['produtoSerializeService']->ArrayOfProdutoToArray($produtos);
+                return $app->json(['Produtos:'=>$produtosArray]);
             } catch (\Exception $e) {
                 return $app->json(['ERRO:' => $e->getMessage()]);
             }
@@ -48,8 +56,8 @@ class ProdutoAPIController implements iProdutoAPIController
                 $produto = $app['produtoService']->fetch($id);
 
                 if($produto instanceof Produto) {
-                    $produtoSerialize = $app['produtoService']->getSerialize();
-                    return $app->json(['Produto:'=>$produtoSerialize->ProdutoToArray($produto)]);
+                    $produtoArray = $app['produtoSerializeService']->ProdutoToArray($produto);
+                    return $app->json(['Produto:'=>$produtoArray]);
                 } else {
                     return $app->json(['ERRO:' => 'Produto nao localizado'], 404);
                 }
@@ -59,17 +67,15 @@ class ProdutoAPIController implements iProdutoAPIController
         })->convert('id', function($id) { return (int) $id; });
 
         //-----------------------------------------------------------------------------
-        //valida e insere o registro de produto solicitado
+        //valida e insere o registro do produto solicitado
         $produtoControllerApi->post('/api/produtos', function(Request $request) use ($app) {
             try{
-                $validador = $app['produtoService']->getValidador();
-                $dados = $validador->valide($request->request->all());
+                $dados = $app['produtoValidatorService']->validate($request->request->all());
                 $produto = $app['produtoService']->insert($dados);
 
                 if($produto instanceof Produto) {
-                    $produtoSerialize = $app['produtoService']->getSerialize();
-                    return $app->json(['SUCESSO:' => 'Produto cadastrado com sucesso',
-                    'Produto'=>$produtoSerialize->ProdutoToArray($produto)]);
+                    $produtoArray = $app['produtoSerializeService']->ProdutoToArray($produto);
+                    return $app->json(['SUCESSO:' => 'Produto cadastrado com sucesso', 'Produto'=>$produtoArray]);
                 } else {
                     return $app->json(['ERRO:' => 'Erro ao inserir produto']);
                 }
@@ -84,12 +90,10 @@ class ProdutoAPIController implements iProdutoAPIController
             try{
                 $produto = $app['produtoService']->fetch($id);
                 if($produto instanceof Produto) {
-                    $validador = $app['produtoService']->getValidador();
-                    $dados = $validador->valideParcial($request->request->all(), $produto);
+                    $dados = $app['produtoValidatorService']->validateParcial($request->request->all(), $produto);
                     if($app['produtoService']->update($dados)) {
-                        $produtoSerialize = $app['produtoService']->getSerialize();
-                        return $app->json(['SUCESSO:' => 'Produto atualizado com sucesso',
-                            'Produto:'=>$produtoSerialize->ProdutoToArray($produto)]);
+                        $produtoArray = $app['produtoSerializeService']->ProdutoToArray($produto);
+                        return $app->json(['SUCESSO:' => 'Produto atualizado com sucesso', 'Produto:'=>$produtoArray]);
                     } else {
                         return $app->json(['ERRO:' => 'Houve um erro ao atualizar o produto']);
                     }

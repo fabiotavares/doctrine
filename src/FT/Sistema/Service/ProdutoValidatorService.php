@@ -6,13 +6,13 @@
  * Time: 14:30
  */
 
-namespace FT\Sistema\Validador;
+namespace FT\Sistema\Service;
 
 use FT\Sistema\Entity\Produto;
 
-class ProdutoValidador
+class ProdutoValidatorService
 {
-    public function valide(array $dados)
+    public function validate(array $dados)
     {
         //valida completamente todos os atributos de um produto
         //todos devem existir
@@ -35,7 +35,7 @@ class ProdutoValidador
         return $dados;
       }
 
-    public function valideParcial(array $dados, Produto $produto)
+    public function validateParcial(array $dados, Produto $produto)
     {
         //valida parcialmente os atributos de um produto (apenas os informados)
         //completa os atributos faltantes
@@ -44,6 +44,6 @@ class ProdutoValidador
         if(!isset($dados['valor'])) $dados['valor'] = $produto->getValor();
         if(!isset($dados['descricao'])) $dados['descricao'] = $produto->getDescricao();
         //retorna a validação completa agora
-        return $this->valide($dados);
+        return $this->validate($dados);
     }
 }

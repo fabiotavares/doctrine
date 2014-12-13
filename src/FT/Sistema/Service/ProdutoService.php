@@ -18,14 +18,10 @@ use Symfony\Component\HttpFoundation\Request;
 class ProdutoService implements iProdutoService
 {
     private $em;
-    private $validador;
-    private $serialize;
 
-    public function __construct(EntityManager $em, ProdutoValidador $validador, ProdutoSerialize $serialize)
+    public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->validador = $validador;
-        $this->serialize = $serialize;
     }
 
     public function getValidador()
