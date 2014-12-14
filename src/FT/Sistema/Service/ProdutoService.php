@@ -11,8 +11,6 @@ namespace FT\Sistema\Service;
 use Doctrine\ORM\EntityManager;
 use FT\Sistema\Entity\Produto as ProdutoEntity;
 use FT\Sistema\Interfaces\iProdutoService;
-use FT\Sistema\Serialize\ProdutoSerialize;
-use FT\Sistema\Validador\ProdutoValidador;
 use Symfony\Component\HttpFoundation\Request;
 
 class ProdutoService implements iProdutoService
@@ -22,16 +20,6 @@ class ProdutoService implements iProdutoService
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    public function getValidador()
-    {
-        return $this->validador;
-    }
-
-    public function getSerialize()
-    {
-        return $this->serialize;
     }
 
     public function getProdutos(Request $request)
