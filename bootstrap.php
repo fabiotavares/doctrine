@@ -1,6 +1,6 @@
 <?php
 
-require_once 'vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 use Doctrine\ORM\Tools\Setup,
     Doctrine\ORM\EntityManager,
@@ -41,6 +41,7 @@ $config->setQueryCacheImpl($cache);
 AnnotationRegistry::registerFile(__DIR__. DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'doctrine' . DIRECTORY_SEPARATOR . 'orm' . DIRECTORY_SEPARATOR . 'lib' . DIRECTORY_SEPARATOR . 'Doctrine' . DIRECTORY_SEPARATOR . 'ORM' . DIRECTORY_SEPARATOR . 'Mapping' . DIRECTORY_SEPARATOR . 'Driver' . DIRECTORY_SEPARATOR . 'DoctrineAnnotations.php');
 
 $evm = new Doctrine\Common\EventManager();
+
 $em = EntityManager::create(
     array(
         'driver'  => 'pdo_mysql',
@@ -54,4 +55,9 @@ $em = EntityManager::create(
     $evm
 );
 
-$app = new \FT\Sistema\Application(array("debug" => true));
+use FT\Sistema\Application;
+
+$app = new Application(array(
+    "debug" => true, // Habilita debug
+    "em"    => $em   // EntityManager
+));

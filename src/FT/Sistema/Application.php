@@ -9,6 +9,12 @@
 namespace FT\Sistema;
 
 use Silex\Application as SilexApp;
+use Silex\Provider\TwigServiceProvider;
+use Silex\Provider\UrlGeneratorServiceProvider;
+
+use FT\Sistema\Service\ProdutoService;
+use FT\Sistema\Service\ProdutoValidatorService;
+use FT\Sistema\Service\ProdutoSerializeService;
 
 class Application extends SilexApp
 {
@@ -18,9 +24,21 @@ class Application extends SilexApp
 
         $app = $this;
 
-        $app->register(new \Silex\Provider\TwigServiceProvider(), array(
+        $app->register(new TwigServiceProvider(), array(
             'twig.path' => __DIR__.'/views',
         ));
-        $app->register(new \Silex\Provider\UrlGeneratorServiceProvider());
+        $app->register(new UrlGeneratorServiceProvider());
+        
+        $app['produtoService'] = function() use($app) {
+            return new ProdutoService($app["em"]);
+        };
+
+        $app['produtoValidatorService'] = function() {
+            return new ProdutoValidatorService();
+        };
+
+        $app['produtoSerializeService'] = function() {
+            return new ProdutoSerializeService();
+        };
     }
 }
