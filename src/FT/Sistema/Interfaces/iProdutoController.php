@@ -13,5 +13,5 @@ use Doctrine\ORM\EntityManager;
 
 interface iProdutoController
 {
-    function getController(Application $app, EntityManager $em);
+    function getController(Application $app);
 } 

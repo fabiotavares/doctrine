@@ -8,36 +8,17 @@
 
 namespace FT\Sistema\Controller;
 
-use Doctrine\ORM\EntityManager;
 use FT\Sistema\Interfaces\iProdutoAPIController;
 use FT\Sistema\Entity\Produto;
-use FT\Sistema\Service\ProdutoValidatorService;
-use FT\Sistema\Service\ProdutoSerializeService;
-use FT\Sistema\Service\ProdutoService;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 
 class ProdutoAPIController implements iProdutoAPIController
 {
-    public function getController(Application $app, EntityManager $em)
+    public function getController(Application $app)
     {
         $produtoControllerApi = $app['controllers_factory'];
 
-        //definição dos serviços disponíveis
-
-        $app['produtoService'] = function() use($em) {
-            return new ProdutoService($em);
-        };
-
-        $app['produtoValidatorService'] = function() use($em) {
-            return new ProdutoValidatorService();
-        };
-
-        $app['produtoSerializeService'] = function() use($em) {
-            return new ProdutoSerializeService();
-        };
-
-        //-----------------------------------------------------------------------------
         //tenta localizar todos os registros de Produtos
         $produtoControllerApi->get('/api/produtos', function() use ($app) {
             try{

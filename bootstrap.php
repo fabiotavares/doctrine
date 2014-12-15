@@ -54,4 +54,4 @@ $em = EntityManager::create(
     $evm
 );
 
-$app = new \FT\Sistema\Application(array("debug" => true));
+$app = new \FT\Sistema\Application(array("debug" => true), $em);

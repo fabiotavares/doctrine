@@ -6,7 +6,7 @@ use FT\Sistema\Controller\ProdutoController;
 use FT\Sistema\Controller\ProdutoAPIController;
 
 $produtosApi = new ProdutoAPIController();
-$app->mount('/', $produtosApi->getController($app, $em));
+$app->mount('/', $produtosApi->getController($app));
 
 $produtos = new ProdutoController();
 $app->mount('/', $produtos->getController($app, $em));
