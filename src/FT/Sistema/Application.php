@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fabio
- * Date: 15/12/2014
- * Time: 13:50
- */
 
 namespace FT\Sistema;
 
@@ -27,6 +21,7 @@ class Application extends SilexApp
         $app->register(new TwigServiceProvider(), array(
             'twig.path' => __DIR__.'/views',
         ));
+
         $app->register(new UrlGeneratorServiceProvider());
 
         $app['produtoService'] = function() use($app) {

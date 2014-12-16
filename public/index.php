@@ -6,10 +6,10 @@ use FT\Sistema\Controller\ProdutoController;
 use FT\Sistema\Controller\ProdutoAPIController;
 
 $produtosApi = new ProdutoAPIController();
-$app->mount('/', $produtosApi->getController($app));
+$app->mount('/', $produtosApi->connect($app));
 
 $produtos = new ProdutoController();
-$app->mount('/', $produtos->getController($app, $em));
+$app->mount('/', $produtos->connect($app, $em));
 
 $app->run();
 

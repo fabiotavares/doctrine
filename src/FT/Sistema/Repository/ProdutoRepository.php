@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fabio
- * Date: 04/12/14
- * Time: 18:59
- */
 
 namespace FT\Sistema\Repository;
 

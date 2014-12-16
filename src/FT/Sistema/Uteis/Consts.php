@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fabio
- * Date: 11/12/2014
- * Time: 15:11
- */
 
 namespace FT\Sistema\Uteis;
 

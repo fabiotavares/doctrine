@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fabio
- * Date: 12/12/2014
- * Time: 15:45
- */
 
 namespace FT\Sistema\Service;
 

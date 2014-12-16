@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fabio
- * Date: 06/11/14
- * Time: 18:48
- */
 
 namespace FT\Sistema\Entity;
 

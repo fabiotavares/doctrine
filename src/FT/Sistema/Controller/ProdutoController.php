@@ -1,20 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fabio
- * Date: 17/11/14
- * Time: 13:42
- */
 
 namespace FT\Sistema\Controller;
 
-use FT\Sistema\Interfaces\iProdutoController;
+use Silex\ControllerProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Application;
 
-class ProdutoController implements iProdutoController
+class ProdutoController implements ControllerProviderInterface
 {
-    public function getController(Application $app)
+    public function connect(Application $app)
     {
         $produtoController = $app['controllers_factory'];
 

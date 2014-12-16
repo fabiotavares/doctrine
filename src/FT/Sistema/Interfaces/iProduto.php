@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Fabio
- * Date: 17/11/14
- * Time: 13:40
- */
 
 namespace FT\Sistema\Interfaces;
 
